@@ -209,3 +209,12 @@ int hocphi = 0, giamgia = 0,lephi=0,tongtien=0;
             }
             BTT.Items.Add(txttongtien.Text);
             >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..
+            
+            <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--------------ham so nguyen to
+            public static bool SNT(int n)
+        {
+            for (int i = 2; i <= n / 2; i++)
+                if (n % i == 0)
+                    return false;
+            return true;
+        }
