@@ -1,4 +1,4 @@
-------------------// sắp xếp mảng
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-----------------// sắp xếp mảng
  int n = 0, i;
         int[] a = new int[100];
         string s, s1;
@@ -101,6 +101,35 @@
                     tongle = tongle + a[i];
                 }
             Tongle.Text = tongle.ToString();
+ >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>           
+            
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-------------// nut tinh tien dien nuoc
+
+             int sonk , csc, csm, sokhoi, tdm, vdm, tong = 0, vat = 0, tongt = 0;
+             csc = Convert.ToInt32(CSOCU.Text);
+             csm = Convert.ToInt32(CSOMOI.Text);
+             sokhoi = csm - csc;
+            SM3.Text = sokhoi.ToString();
+            sonk = Convert.ToInt32(SONK.Text);
+            if(sonk<4)
+            {
+                tdm = 12;
+                vdm = sokhoi - tdm;
+            }
+            else
+            {
+                tdm = 15;
+                vdm = sokhoi - tdm;
+            }
+            SM3DM.Text = tdm.ToString();
+            SM3VM.Text = vdm.ToString();
+            tong = tdm * 3500 + vdm * 4500;
+            TTDUNG.Text = tong.ToString();
+            vat = tong * 10 / 100;
+            VAT.Text = vat.ToString();
+            tongt = tong + vat;
+            TTPTra.Text = tongt.ToString();
+
 -----------// thông báo txtbox
 int csc, csm;
             try
@@ -120,3 +149,63 @@ int csc, csm;
             {
                 MessageBox.Show("chỉ số phải là số", "Thông báo");
             }
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<---------------------// bai ngoaingu anh viet
+
+int hocphi = 0, giamgia = 0,lephi=0,tongtien=0;
+            
+            if(ttB.Checked==true)
+            {
+                hocphi = 750000;
+            }
+            if (ttA.Checked == true)
+            {
+                hocphi = 850000;
+            }
+            if (nnB.Checked == true)
+            {
+                hocphi = 1100000;
+            }
+            if (nnA.Checked == true)
+            {
+                hocphi = 1050000;
+            }
+            txthocphi.Text = hocphi.ToString();
+            if(CBhinhthuchoc.SelectedItem == "Ôn thi")
+            {
+                giamgia =  hocphi * 10 / 100;
+            }
+            else
+            {
+                giamgia = 0;
+            }
+            txtgiamgia.Text = giamgia.ToString();
+            lephi = hocphi * 20 / 100;
+            txtlephi.Text = lephi.ToString();
+            tongtien = hocphi + lephi - giamgia;
+            txttongtien.Text = tongtien.ToString();
+            
+            -----------//nut in danh sach 
+            
+            Bhoten.Items.Add(txthoten.Text);
+            Bngsinh.Items.Add(txtngsinh.Text);
+            Bhinhthuc.Items.Add(CBhinhthuchoc.Text);
+            if(ttB.Checked==true)
+            {
+                BCC.Items.Add(ttB.Text);
+            }
+            if (ttA.Checked == true)
+            {
+                BCC.Items.Add(ttA.Text);
+            }
+            if (nnB.Checked == true)
+            {
+                BCC.Items.Add(nnB.Text);
+            }
+            if (nnA.Checked == true)
+            {
+                BCC.Items.Add(nnA.Text);
+            }
+            BTT.Items.Add(txttongtien.Text);
+            >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..
