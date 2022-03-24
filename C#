@@ -101,3 +101,22 @@
                     tongle = tongle + a[i];
                 }
             Tongle.Text = tongle.ToString();
+-----------// thông báo txtbox
+int csc, csm;
+            try
+            {
+                csc = Convert.ToInt32(CSOCU.Text);
+                csm = Convert.ToInt32(CSOMOI.Text);
+                if(csc>csm)
+                {
+                    MessageBox.Show("Chỉ số mới phải lớn hơn chỉ số cũ!!!", "Thông báo");
+                }
+                else
+                {
+                    csm = Convert.ToInt32(CSOMOI.Text);
+                }
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("chỉ số phải là số", "Thông báo");
+            }
