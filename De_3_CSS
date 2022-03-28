@@ -1,0 +1,7 @@
+#avatar:hover
+{
+   cursor: pointer;
+}
+.luu{
+   margin-right: 50px;
+}
