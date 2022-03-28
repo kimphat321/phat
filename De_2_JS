@@ -13,12 +13,12 @@ $(document).ready(function(){
             img=reader.result;
         };
     });
-    $("#btnadd").on("click",Savedata());
+    $("#btnmoi").on("click",Savedata());
     Loaddata();
 })
 function Savedata()
 {
-    alert("abc")
+    
     if(validate())
     {
         SaveLocal();
@@ -44,13 +44,13 @@ function Loaddata()
     var tbl=document.getElementById("tbl");
     var sodong=localStorage.length;
     var rows =$("tr");
-    for(let i=1;i<sodong;i++) rows[i].remove();
+    for(let i=1;i<rows.length;i++) rows[i].remove();
     for(let i=0;i<sodong;i++)
     {
         var id=localStorage.key(i);
         var data =JSON.parse(localStorage.getItem(id));
         var row = tbl.insertRow(i+1);
-        row.setAttrbute("id",id);
+        row.setAttribute("id",id);
         var cell0=row.insertCell(0);
         var cell1=row.insertCell(1);
         var cell2=row.insertCell(2);
@@ -60,7 +60,7 @@ function Loaddata()
         var cell6=row.insertCell(6);
         var cell7=row.insertCell(7);
         cell0.innerHTML=i+1;
-        cell1.innerHTML="<img src='"+data.avatar+"' height='50px'/>";
+        cell1.innerHTML="<img src='"+ data.avatar +"' height='50px'/>";
         cell2.innerHTML=data.hoten;
         cell3.innerHTML=data.ngaysinh;
         cell4.innerHTML=data.diachi;
@@ -68,21 +68,22 @@ function Loaddata()
         cell6.innerHTML=data.SODT;
         var nutxoa= "<img src=\"../img/Delete-icon.png\"";
         nutxoa+="onclick=\"xoadong(\""+id+"\")\"/>";
-        var nutxoa= "<img src=\"../img/Edit-icon.png\"";
-        nutsua+="onclick=\"suadong(\""+id+"\")\"/>";
+        var nutsua= "<img src=\"../img/Edit-icon.png\"";
+        nutsua+="onclick=\"suadong(\""+id+"\")\" data-toggle =\"modal\"data-target=\"#userbox\"/>";
         cell7.innerHTML=nutxoa+"|"+nutsua;
+        $("#"+id+" td").addClass("boder boder-dark text-center");
     }
-    $("#"+id+" td").addClass("boder boder-dark text-center");
+   
 }
 function isEmpty(str) {
-    return str.length > 0 ? true : false;
+    return str.length > 0 ? false : true;
 }
 function isEmail(str) {
     const pattern = /^[a-z][a-ze0-9_]{2,32}@[a-z]{3,5}\.[a-z]{2,3}$/; 
     return pattern.test(str);
 }
 function isBirthDay(str) {
-    const pattern = /^(\d{1,2})V(\d{1,2})\/(\d{4})$/;
+    const pattern = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
     if (pattern.test(str)) 
     {
         let array = str.split('/');
@@ -97,12 +98,8 @@ function isBirthDay(str) {
     }
     return false;
 }
-function isEmail(str) {
-        const pattern =/^[a-z][a-ze-9_]{2,32}@[a-z]{3,5}\.[a-z]{2,3}$/; 
-        return pattern.test(str);
-    }
 function isPhone(str) {
-        const pattern=/(^@[3|5\7\8\9])+[0-9]{8}\b/; 
+        const pattern=/(^0[3|5\7\8\9])+[0-9]{8}\b/; 
         return pattern.test(str);          
     }
     function validate()
@@ -110,7 +107,7 @@ function isPhone(str) {
         var hoten = $("#txthoten").val();
         var Diachi = $("#txtdiachi").val();
         var Email = $("#email").val();
-        var ngaysinh = $("#Ngsinh").val();
+        var ngaysinh = $("#txtNgsinh").val();
         var SODT = $("#txtDT").val();
         var ketqua=true;
         var loi="";
@@ -130,14 +127,42 @@ function isPhone(str) {
             ketqua=false;
             loi+="\n Nhập ngày sinh không đúng";
         }
+        if(isEmpty(Diachi)){
+            ketqua=false;
+            loi+="\n Địa chỉ không được bỏ trống";
+        }
+        if(!ketqua) alert(loi);
         return ketqua;
 }
 function xoadong(dong)
 {
-    id(confirm("Bạn có chắc muốn xóa không?"))
+    if(confirm("Bạn có chắc muốn xóa không?"))
     {
         localStorage.removeItem(dong);
         Loaddata();
     }
 }
+function suadong(dong)
+{
+    var data= JSON.parse(localStorage.getItem(dong));
+    $("#txtHoten").val(data.hoten); $("#txtNgaysinh").val(data.ngaysinh);
+    $("#txtEmail").val(data.email); $("#txtDiachi").val(data.diachi);
+    $("#txtDienthoai").val(data.dienthoai); 
+    $("#avatar").attr("src",data.avatar);ing-data.avatar; 
+    $("#luuid").text(dong);
+    $("#btnluu").attr("style", "display:inline");
+    $("#btnbo").attr("style", "display:inline");    
+    $("#btndong").attr("style", "display:none"); 
+    $("#btnmoi").attr("style", "display:none"); 
+    thietlaptieude(1);
+}
 
+function resetform()
+{
+    $("#txtHoten").val(""); 
+    $("#txtNgaysinh").val("");
+    $("atxtEmail").val("");
+    $("#txtDiachi").val(""); 
+    $("#txtDienthoai").val("");
+    $("#avatar").attr("src","../img/avatar.png");
+}
