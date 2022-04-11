@@ -1,0 +1,60 @@
+--b) Thêm thuộc tính KQThi có dữ liệu kiểu chuỗi với độ dài 10 cho bảng KetQua
+ALTER TABLE KetQua 
+ADD 
+KQThi NVARCHAR(10) NULL
+--C) Tạo ràng buộc điểm thi của học viên chỉ nhận giá trị từ 0 đến 10
+ALTER TABLE KETQUA 
+add
+CHECK (Diem BETWEEN 0 AND 10) 
+--Nhập dữ liệu cho 4 bảng 
+---Câu 2. Sử dụng câu lệnh SQL để thực hiện các yêu cầu sau: 
+--a) Cập nhật SoTiet môn học ‘THCB’ là 75 
+	UPDATE MONHOC 
+	SET SoTiet = 75 
+	WHERE MaMH='THCB'
+--b) Cập nhật KQThi là ‘Đạt’ cho những học viên có điểm >=5 và “Hỏng” cho những học viên có điểm < 5 
+	UPDATE KETQUA 
+	SET KQThi = CASE 
+	 WHEN Diem >5 THEN N'Đạt' 
+	 ELSE N'Hỏng'
+	END
+--c) In ra danh sách những học viên có điểm thi <5 
+	SELECT DISTINCT HV.* FROM HOCVIEN HV, KETQUA KQ 
+	WHERE HV.MaHV=KQ.MaHV AND DiemThi<5
+---d) Hãy lập danh sách học viên Nam có có tuổi từ 26 trở lên
+SELECT * FROM HOCVIEN 
+WHERE Phai='Nam' and (year(getdate())-year(NgSinh))>=26
+---e) Hãy lập danh sách học viên chưa tham gia thi 
+SELECT * FROM HOCVIEN 
+WHERE MaHV NOT IN (SELECT MaHV FROM KetQua)
+---f) Hãy tìm học viên đạt điểm thấp nhất ? 
+	SELECT TOP 1 WITH TIES HV.* 
+	FROM HOCVIEN HV, KetQua KQ 
+	WHERE HV.MaHV=KQ.MaHV ORDER BY Diem ASC 
+--g) Hãy thống kê những môn học có từ 2 học viên tham gia thi trở lên. Thông tin gồm: MaMH, TenMH, TongSo_HV ? 
+	SELECT A.MaMH, TenMH, COUNT(MaHV) AS TongSo_HV 
+	FROM MONHOC A, KETQUA B 
+	WHERE A.MaMH=B.MaMH 
+	GROUP BY A.MaMH, TenMH 
+	HAVING COUNT(MaHV) > 2
+--Câu 3. Viết thủ tục nội tại sau:
+--a) Viết thủ tục nhập dữ liệu cho bảng KetQua, với các đối số của thủ tục là các giá trị cần thêm vào bảng kết quả ?
+	CREATE PROC pr_insert_ketqua 
+		@MaHV VARCHAR(10), @MaMH NVARCHAR(5), 
+		@DiemMH decimal(5,2), @Ketquathi nvarchar(15)
+	AS
+	 BEGIN 
+		INSERT INTO KETQUA VALUES(@MaHV, @MaMH, @Diemmh, @Ketquathi)
+	 END 
+	 Execute pr_insert_ketqua 'HV005','THVP',4,NULL 
+	 --b) Viết thủ tục nhập vào mã số học viên in tất cả thông tin liên quan đến kết quả thi của học viên đó? 
+	GO
+		CREATE PROCEDURE PR_KQT @MaSoTS VARCHAR(10) 
+	AS 
+		 BEGIN
+		 SELECT KQ.* 
+		 FROM HOCVIEN HV, KetQua KQ 
+		 WHERE HV.MaHV=KQ.MaHV AND KQ.MaHV=@MaSoTS 
+	 END
+	 execute PR_KQT 'HV001'
+
