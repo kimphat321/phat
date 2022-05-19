@@ -1,0 +1,142 @@
+use master
+create database thi_lai
+use thi_lai
+---CAU1---
+--a)
+create table HANG_SX 
+(
+mahsx char(2) primary key,
+tenhsx nvarchar(50),
+)
+create table DIEN_THOAI
+(
+madt char(6) primary key,
+tendt nvarchar(50),
+dggoc numeric (15,2),
+soluong int ,
+mahsx char(2),
+foreign key (mahsx) references HANG_SX(mahsx)
+on delete cascade
+on update cascade,
+)
+create table DON_DAT_HANG
+(
+maddh char(2) primary key,
+hotenkh nvarchar(50),
+ngaydh date,
+tinhtrang nvarchar(20),
+)
+create table CT_DAT_HANG
+(
+maddh char(2) ,
+foreign key (maddh) references DON_DAT_HANG(maddh)
+on delete cascade
+on update cascade,
+madt char(6) ,
+foreign key (madt) references DIEN_THOAI(madt)
+on delete cascade
+on update cascade,
+soluongdat int,
+dongiaban numeric(15,2),
+httt nvarchar(50),
+primary key(maddh,madt)
+)
+
+--B)
+alter table Dien_thoai
+add
+Ghichu nvarchar(50)
+--------
+--C)
+alter table DON_DAT_HANG
+add
+check (ngaydh <= getdate())
+------
+--D)
+insert into HANG_SX  values('mt','motorola')
+insert into HANG_SX  values('nk','nokia')
+insert into HANG_SX values('op','oppo f1')
+insert into HANG_SX values('sa','samsung')
+
+Insert into Dien_thoai values('nk04','Nokia 580 X',245000,15,'nk')
+Insert into Dien_thoai values('nk10','Nokia 8800 gold',1599900,5,'nk')
+Insert into Dien_thoai values('oppo','oppo f1',4990000,10,'op')	
+Insert into Dien_thoai values('sa01','samsung E1270',2900000,6,'sa')
+Insert into Dien_thoai values('sa02','samsung',6000000,20,'sa')
+
+
+Insert into DON_DAT_HANG values(01,N'Nguyễn Thanh Sang','03/10/2012',N'đã giao hàng')
+Insert into DON_DAT_HANG values(02,N'Lê Trọng Nguyên','06/15/2012',N'đã giao hàng')
+Insert into DON_DAT_HANG values(03,N'Nguyễn Lê Vũ','09/15/2012',N'đã giao hàng')
+Insert into DON_DAT_HANG values(04,N'Trần Thị Minh Thu','10/20/2012',NULL)
+Insert into DON_DAT_HANG values(05,N'Nguyễn Như Ý','11/25/2012',NULL)
+Insert into DON_DAT_HANG values(06,N'Lý Hồng Ân','11/01/2012',NULL)
+--ctdathang
+Insert into CT_DAT_HANG values(01,'nk04',2,0,N'chuyển khoảng')
+Insert into CT_DAT_HANG values(01,'nk10',3,0,N'chuyển khoảng')
+Insert into CT_DAT_HANG values(02,'nk10',2,0,N'tiền mặt')
+Insert into CT_DAT_HANG values(03,'oppo',3,0,N'chuyển khoảng')
+Insert into CT_DAT_HANG values(04,'sa01',2,0,NULL)
+Insert into CT_DAT_HANG values(04,'oppo',7,0,NULL)
+Insert into CT_DAT_HANG values(05,'sa01',2,0,NULL)
+--------
+------------------
+---------------
+--CAU2---
+--A)
+update CT_DAT_HANG
+set dongiaban=dggoc*90/100
+from DIEN_THOAI 
+where DIEN_THOAI.madt=CT_DAT_HANG.madt
+-----------
+--B)
+update Dien_thoai
+set Ghichu = case
+				when soluong>=15 then N'Còn hàng' else N'Gần hết hàng'
+				end
+-----------------
+--C)
+select madt,tendt,dggoc
+from DIEN_THOAI
+where tendt='samsung'
+-----------------
+--D)
+select dt.*
+from DIEN_THOAI dt,DON_DAT_HANG ddh,CT_DAT_HANG ctdh
+where dt.madt=ctdh.madt and ddh.maddh=ctdh.maddh and month(ngaydh)=11
+----------
+--E)
+select *,soluongdat*dongiaban as N'Thành Tiền'
+from CT_DAT_HANG
+---------------
+--F)
+select *
+from DIEN_THOAI
+where tendt like'Nokia %' and soluong>5
+---------------
+--G)
+select *
+from DIEN_THOAI
+where tendt like'samsung %' or soluong>10
+-------------
+--H)
+select madt,tendt,Ghichu
+from DIEN_THOAI
+where dggoc between 3000000 and 5000000
+------------
+--I)
+select top 1 *
+from DIEN_THOAI
+order by dggoc desc
+-------------
+--J)
+select madt,tendt
+from DIEN_THOAI
+where madt not in (select madt
+					from CT_DAT_HANG)
+----------------
+--K)
+select *
+from DON_DAT_HANG
+where maddh not in (select maddh
+					from CT_DAT_HANG)
