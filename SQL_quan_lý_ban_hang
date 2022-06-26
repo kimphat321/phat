@@ -272,3 +272,135 @@ public FR_NHANVIEN()
             else
                 MK.UseSystemPasswordChar = true;
         }
+
+--------Bảng không có combobox---------
+private void FR_CHUCVU_Load(object sender, EventArgs e)
+        {
+            kn.mokn();
+            loaddulieu();
+            B_luu.Enabled = false;
+            B_huy.Enabled = false;
+        }
+        ketnoi kn = new ketnoi();
+        public void loaddulieu()
+        {
+            string s = "Select * from CHUCVU";
+            DGV_CV.DataSource = kn.taobang(s);
+        }
+        private void B_them_Click(object sender, EventArgs e)
+        {
+            TXT_MaCV.ResetText();
+            TXT_TenCV.ResetText();
+            TXT_PhuCap.ResetText();
+            TXT_MaCV.Focus();
+            B_luu.Enabled = true;
+            B_huy.Enabled = true;
+            B_sua.Enabled = false;
+            B_xoa.Enabled = false;
+            B_InKH.Enabled = false;
+        }
+
+        private void B_sua_Click(object sender, EventArgs e)
+        {
+            string s = "select * from CHUCVU where MACV='" + TXT_MaCV.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count != 0)
+            {
+                kn.suaCV(TXT_MaCV.Text, TXT_TenCV.Text, TXT_PhuCap.Text);
+                baoloi.Text = "Sửa Bảng chức vụ thành công";
+                B_luu.Enabled = false;
+                B_huy.Enabled = false;
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+                B_InKH.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Sửa Bảng chức vụ không thành công";
+                TXT_MaCV.ResetText();
+                TXT_TenCV.ResetText();
+                TXT_PhuCap.ResetText();
+                TXT_MaCV.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void B_xoa_Click(object sender, EventArgs e)
+        {
+            string s = "select * from CHUCVU where MACV='" + TXT_MaCV.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count != 0)
+            {
+                kn.xoaCV(TXT_MaCV.Text, TXT_TenCV.Text, TXT_PhuCap.Text);
+                baoloi.Text = "Xóa Bảng chức vụ thành công";
+                B_luu.Enabled = false;
+                B_huy.Enabled = false;
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+                B_InKH.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Xóa Bảng chức vụ không thành công";
+                TXT_MaCV.ResetText();
+                TXT_TenCV.ResetText();
+                TXT_PhuCap.ResetText();
+                TXT_MaCV.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void B_luu_Click(object sender, EventArgs e)
+        {
+            string s = "select * from CHUCVU where MACV='" + TXT_MaCV.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count == 0)
+            {
+                kn.themCV(TXT_MaCV.Text, TXT_TenCV.Text, TXT_PhuCap.Text);
+                baoloi.Text = "thêm Bảng chức vụ thành công";
+                B_luu.Enabled = false;
+                B_huy.Enabled = false;
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+                B_InKH.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Thêm Bảng chức vụ không thành công";
+                TXT_MaCV.ResetText();
+                TXT_TenCV.ResetText();
+                TXT_PhuCap.ResetText();
+                TXT_MaCV.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void DGV_CV_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataTable dt = new DataTable();
+            dt = (DataTable)DGV_CV.DataSource;
+            int tam = -1;
+            tam = DGV_CV.SelectedCells[0].RowIndex;
+            DataRow dong = dt.Rows[tam];
+            TXT_MaCV.Text = dong["MACV"].ToString();
+            TXT_TenCV.Text = dong["TENCV"].ToString();
+            TXT_PhuCap.Text = dong["PhuCap"].ToString();
+            TXT_MaCV.Enabled = false;
+        }
+
+        private void B_thoat_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void B_huy_Click(object sender, EventArgs e)
+        {
+            TXT_MaCV.ResetText();
+            TXT_PhuCap.ResetText();
+            TXT_TenCV.ResetText();
+            TXT_MaCV.Focus();
+        }
+    }
