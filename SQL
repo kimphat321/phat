@@ -1,0 +1,274 @@
+-------Ket noi---------
+class ketnoi
+    {
+        public SqlConnection kn = new SqlConnection("Data Source=MSI;Initial Catalog=QLBH_Kim_Phat;Integrated Security=True");
+        public void mokn()
+        {
+            kn.Open();
+        }
+        public void dongkn()
+        {
+            kn.Close();
+        }
+        public DataTable taobang(string sql)
+        {
+            DataTable dta = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(sql, kn);
+            da.Fill(dta);
+            return dta;
+        }
+        //thêm chất liệu
+       public void themCL(string mcl,string tcl)
+        {
+            string s = "insert into CHATLIEU values('" + mcl + "',N'" + tcl + "')";
+            SqlCommand scm = new SqlCommand(s,kn);
+            scm.ExecuteNonQuery();
+        }
+        //sửa chất liệu
+        public void suaCL(string mcl, string tcl)
+        {
+            string s = "update CHATLIEU set tenchatlieu=N'" + tcl + "'where machatlieu='"+mcl+"'";
+            SqlCommand scm = new SqlCommand(s, kn);
+            scm.ExecuteNonQuery();
+        }
+        //xóa chất liệu
+        public void xoaCL(string mcl, string tcl)
+        {
+            string s = "Delete from CHATLIEU where machatlieu='" + mcl + "'";
+            SqlCommand scm = new SqlCommand(s, kn);
+            scm.ExecuteNonQuery();
+        }
+----------------- vào bảng----------------
+using System.Data.SqlClient;
+public FR_NHANVIEN()
+        {
+            InitializeComponent();
+        }
+        ketnoi kn = new ketnoi();
+        SqlConnection connet;
+        public void loaddulieu()
+        {
+            string s = "Select * from NHANVIEN";
+            DGV_NV.DataSource = kn.taobang(s);
+        }
+        public void loadcombobox()
+        {
+            connet = kn.kn;
+            connet.Open();
+            SqlCommand cm = new SqlCommand("select macv from chucvu",connet);
+            SqlDataAdapter da = new SqlDataAdapter(cm);
+            DataSet ds = new DataSet();
+            da.Fill(ds, "chucvu");
+            CB_MCV.DataSource = ds.Tables[0];
+            CB_MCV.DisplayMember = "macv";
+            CB_MCV.ValueMember = "macv";
+
+            SqlCommand cm1 = new SqlCommand("select MATRINHDO from TRINHDOHOCVAN", connet);
+            SqlDataAdapter da1 = new SqlDataAdapter(cm1);
+            DataSet ds1 = new DataSet();
+            da1.Fill(ds1, "TRINHDOHOCVAN");
+            CB_MTD.DataSource = ds1.Tables[0];
+            CB_MTD.DisplayMember = "MATRINHDO";
+            CB_MTD.ValueMember = "MATRINHDO";
+        }
+        private void FR_NHANVIEN_Load(object sender, EventArgs e)
+        {
+            loadcombobox();
+            loaddulieu();
+            B_luu.Enabled = false;
+            B_huy.Enabled = false;
+        }
+
+        private void B_them_Click(object sender, EventArgs e)
+        {
+            TXT_MANV.ResetText();
+            TXT_HTNV.ResetText();
+            TXT_GT.ResetText();
+            TXT_Ngsinh.ResetText();
+            TXT_DC.ResetText();
+            TXT_SDT.ResetText();
+            TXT_NGVL.ResetText();
+            TXT_LUONG.ResetText();
+            TXT_MANV.Focus();
+            B_luu.Enabled = true;
+            B_huy.Enabled = true;
+            B_sua.Enabled = false;
+            B_xoa.Enabled = false;
+            B_InDS.Enabled = false;
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void B_sua_Click(object sender, EventArgs e)
+        {
+            string s = "select * from NHANVIEN where MANV='" + TXT_MANV.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count != 0)
+            {
+                kn.suaNV(TXT_MANV.Text, TXT_HTNV.Text, TXT_GT.Text, TXT_Ngsinh.Value.ToString("yyyy/MM/dd"), TXT_DC.Text,TXT_SDT.Text, TXT_NGVL.Value.ToString("yyyy/MM/dd"), TXT_LUONG.Text,CB_MCV.Text,CB_MTD.Text);
+                baoloi.Text = "Sửa NHANVIEN thành công";
+                B_luu.Enabled = false;
+                B_huy.Enabled = false;
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+                B_InDS.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Sửa NHANVIEN không thành công";
+                TXT_MANV.ResetText();
+                TXT_HTNV.ResetText();
+                TXT_GT.ResetText();
+                TXT_Ngsinh.ResetText();
+                TXT_DC.ResetText();
+                TXT_SDT.ResetText();
+                TXT_NGVL.ResetText();
+                TXT_LUONG.ResetText();
+                TXT_MANV.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void B_xoa_Click(object sender, EventArgs e)
+        {
+            string s = "select * from NHANVIEN where MANV='" + TXT_MANV.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count != 0)
+            {
+                kn.xoaNV(TXT_MANV.Text, TXT_HTNV.Text, TXT_GT.Text, TXT_Ngsinh.Value.ToString("yyyy/MM/dd"), TXT_DC.Text, TXT_SDT.Text, TXT_NGVL.Value.ToString("yyyy/MM/dd"), TXT_LUONG.Text,CB_MCV.Text,CB_MTD.Text);
+                baoloi.Text = "xóa NHANVIEN thành công";
+                B_luu.Enabled = false;
+                B_huy.Enabled = false;
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+                B_InDS.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "xóa NHANVIEN không thành công";
+                TXT_MANV.ResetText();
+                TXT_HTNV.ResetText();
+                TXT_GT.ResetText();
+                TXT_Ngsinh.ResetText();
+                TXT_DC.ResetText();
+                TXT_SDT.ResetText();
+                TXT_NGVL.ResetText();
+                TXT_LUONG.ResetText();
+                TXT_MANV.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void B_luu_Click(object sender, EventArgs e)
+        {
+            string s = "select * from NHANVIEN where MANV='" + TXT_MANV.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count == 0)
+            {
+                kn.themNV(TXT_MANV.Text, TXT_HTNV.Text, TXT_GT.Text, TXT_Ngsinh.Value.ToString("yyyy/MM/dd"), TXT_DC.Text, TXT_SDT.Text, TXT_NGVL.Value.ToString("yyyy/MM/dd"), TXT_LUONG.Text,CB_MCV.Text,CB_MTD.Text);
+                baoloi.Text = "Thêm NHANVIEN thành công";
+                B_luu.Enabled = false;
+                B_huy.Enabled = false;
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+                B_InDS.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Thêm NHANVIEN không thành công";
+                TXT_MANV.ResetText();
+                TXT_HTNV.ResetText();
+                TXT_GT.ResetText();
+                TXT_Ngsinh.ResetText();
+                TXT_DC.ResetText();
+                TXT_SDT.ResetText();
+                TXT_NGVL.ResetText();
+                TXT_LUONG.ResetText();
+                TXT_MANV.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void B_thoat_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void B_huy_Click(object sender, EventArgs e)
+        {
+            TXT_MANV.ResetText();
+            TXT_HTNV.ResetText();
+            TXT_GT.ResetText();
+            TXT_Ngsinh.ResetText();
+            TXT_DC.ResetText();
+            TXT_SDT.ResetText();
+            TXT_NGVL.ResetText();
+            TXT_LUONG.ResetText();
+            TXT_MANV.Focus();
+        }
+----------------DATA GIVIEW----------------
+        private void DGV_NV_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataTable dt = new DataTable();
+            dt = (DataTable)DGV_NV.DataSource;
+            int tam = -1;
+            tam = DGV_NV.SelectedCells[0].RowIndex;
+            DataRow dong = dt.Rows[tam];
+            TXT_MANV.Text = dong["MANV"].ToString();
+            TXT_HTNV.Text = dong["HOTENNV"].ToString();
+            TXT_GT.Text = dong["GIOITINH"].ToString();
+            TXT_Ngsinh.Text = dong["NGAYSINH"].ToString();
+            TXT_DC.Text = dong["DIACHI"].ToString();
+            TXT_SDT.Text = dong["SODT"].ToString();
+            TXT_NGVL.Text = dong["NGAYVL"].ToString();
+            TXT_LUONG.Text = dong["MUOCLUONG"].ToString();
+            TXT_MANV.Enabled = false;
+        }
+  ----------------DATA GIVIEW----------------
+  ----------------Bảng đăng nhập---------------
+  private void button3_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        ketnoi kn = new ketnoi();
+        public void hiengiaodien()
+        {
+            Giao_Dien gd = new Giao_Dien();
+            gd.ShowDialog();
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string s="select * from dangnhap where username = '"+ TenDN.Text + "'";
+            DataTable datatable = new DataTable();
+            datatable = kn.taobang(s);
+            string s1 = "select * from dangnhap where password = '" + MK.Text + "'";
+            DataTable datatable1 = new DataTable();
+            datatable1 = kn.taobang(s1);
+            if((datatable.Rows.Count!=0)&& (datatable1.Rows.Count != 0))
+            {
+                Thread th = new Thread(new ThreadStart(hiengiaodien));
+                th.Start();
+                this.Close();
+            }
+            else
+            {
+                LB.Text = "Đăng nhập thất bại";
+                TenDN.ResetText();
+                TenDN.Focus();
+                MK.ResetText();
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (check.Checked)
+                MK.UseSystemPasswordChar = false;
+            else
+                MK.UseSystemPasswordChar = true;
+        }
