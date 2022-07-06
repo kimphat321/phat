@@ -1,0 +1,102 @@
+public static boolean SNT(int n)
+        {
+            for (int i = 2; i <= n / 2; i++)
+                if (n % i == 0)
+                    return false;
+            return true;
+        }
+Liệt kê SNT
+
+int n,i;
+        String lk1 = " ";
+        n=Integer.parseInt(TXT_nhapn.getText());
+        for(i=1;i<=n;i++)
+        {
+            if(SNT(i))
+            {
+                lk1=lk1+" "+i;
+            }
+        }
+        TXT_lksnt.setText(lk1);
+
+
+Bài có combobox
+int sl,dongia,thanhtien=0,thue=0;
+           String dongia1="",thanhtien1="",thue1="";
+           sl=Integer.parseInt(TXT_sl.getText());
+           dongia1=CB_dongia.getSelectedItem().toString();
+           dongia=Integer.valueOf(dongia1);
+           thanhtien=sl * dongia;
+           thue=thanhtien+thanhtien*10/100;
+           thue1=String.valueOf(thue);
+           TXT_thue.setText(thue1);
+           thanhtien1=String.valueOf(thanhtien);
+           TXT_thanhtien.setText(thanhtien1);
+
+Bài ước số
+int n,tong=0,dem=0;
+        String lk="",lkSNT="",tong1="",dem1="";
+        n=Integer.parseInt(TXT_nhapn.getText());
+        for(int i=1;i<=n;i++)
+        {
+            if(n%i==0)
+                {
+                    lk=lk+" "+i;
+                    TXT_lietke.setText(lk);
+                    tong=tong+i;
+                    tong1=String.valueOf(tong);
+                    TXT_tong.setText(tong1);
+                    if(i%2==0)
+                    {
+                        dem=dem+1;
+                        dem1=String.valueOf(dem);
+                        TXT_dem.setText(dem1);
+                    }
+                    if(SNT(i))
+                    {
+                        lkSNT=lkSNT+" "+i;
+                        TXT_lietkeSNT.setText(lkSNT);
+                    }
+                }
+        }
+
+
+Trung tâm ngoại ngữ anh việt
+int hocphi = 0,lephi,tong,giamgia,ck1;
+        String lephi1="",tong1="",giamgia1="",hocphi1="";
+                TXT_tenhs.getText();
+                if(RD_THB.isSelected())
+                {
+                    hocphi=750000;
+                    
+                }
+                if(RD_THA.isSelected())
+                {
+                    hocphi=850000;
+                }
+                if(RD_NNB.isSelected())
+                {
+                    hocphi=1100000;
+                }
+                if(RD_NNA.isSelected())
+                {
+                    hocphi=1050000;
+                }
+                hocphi1=String.valueOf(hocphi);
+                TXT_HP.setText(hocphi1);
+                if(CB_HT.getSelectedItem()=="ôn thi")
+                {
+                    giamgia=hocphi*10/100;
+                }
+                else
+                {
+                    giamgia=0;
+                }
+                lephi =  hocphi * 20 / 100;
+                tong = hocphi + lephi - giamgia;
+                giamgia1=String.valueOf(giamgia);
+                TXT_GG.setText(giamgia1);
+                lephi1=String.valueOf(lephi);
+                TXT_LP.setText(lephi1);
+                tong1=String.valueOf(tong);
+                TXT_Tong.setText(tong1);
