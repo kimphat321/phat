@@ -92,3 +92,7 @@ ShowDisplay=0
 ShowStatusBar=1
 width=320
 height=320> </embed></OBJECT>
+
+
+Chữ mờ ảo-----------------------------------------------------------------------------------------------------------------------------
+<table  style="filter:drop-shadow(5px 5px 5px red)"><td>{param}</td></table>
