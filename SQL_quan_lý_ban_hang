@@ -404,3 +404,121 @@ private void FR_CHUCVU_Load(object sender, EventArgs e)
             TXT_MaCV.Focus();
         }
     }
+    
+    -------------------------------Thống kê-----------------------------------------
+    namespace QLBH_KIM_PHAT
+{
+    public partial class FR_Thongke_Hoadon_ngaylaphd : Form
+    {
+        public FR_Thongke_Hoadon_ngaylaphd()
+        {
+            InitializeComponent();
+        }
+        ketnoi kn = new ketnoi();
+        private void FR_Thongke_Hoadon_ngaylaphd_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string nlhd;
+            if (string.IsNullOrEmpty(ngaylaphd.Value.ToString("yyyy/MM/dd")))
+            {
+                nlhd = null;
+            }
+            else
+                nlhd = ngaylaphd.Value.ToString("yyyy/MM/dd");
+            string s = "select NGAYLAPHD,*from HOADON where NGAYLAPHD ='" + nlhd + "'";
+            DTG_HD_Ngaylaphd.DataSource = kn.taobang(s);
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void DTG_HD_Ngaylaphd_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+    }
+ }
+ ------------------------------Thông kê có tính-----------------------------------
+ namespace QLBH_KIM_PHAT
+{
+    public partial class FR_TK_SOHD : Form
+    {
+        public FR_TK_SOHD()
+        {
+            InitializeComponent();
+        }
+        public void loaddulieu()
+        {
+            
+        }
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+        ketnoi kn = new ketnoi();
+        SqlConnection connet;
+        public void loadcombobox()
+        {
+            connet = kn.kn;
+            connet.Open();
+            SqlCommand cm = new SqlCommand("select SOHD from hoadon", connet);
+            SqlDataAdapter da = new SqlDataAdapter(cm);
+            DataSet ds = new DataSet();
+            da.Fill(ds, "HOADON");
+            CB_SHD.DataSource = ds.Tables[0];
+            CB_SHD.DisplayMember = "SOHD";
+            CB_SHD.ValueMember = "SOHD";
+        }
+        private void FR_TK_SOHD_Load(object sender, EventArgs e)
+        {
+            loadcombobox();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void DTG_TK_SOHD_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string shd;
+            if (string.IsNullOrEmpty(CB_SHD.Text))
+            {
+                shd = null;
+            }
+            else
+                shd = CB_SHD.Text;
+            string s = "Select HOADON.SOHD,TENKH,TENSP,NGAYLAPHD,SOLUONG,DONGIABAN,SOLUONG*DONGIABAN as Thanh_tien"
+                + " from HOADON, HOADONCT, SANPHAM, KHACHHANG"
+                + " where HOADON.SOHD = HOADONCT.SOHD and SANPHAM.MASP = HOADONCT.MASP and KHACHHANG.MAKH = HOADON.MAKH and hoadon.sohd='" + shd + "'";
+            DTG_TK_SOHD.DataSource = kn.taobang(s);
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            int tongsl = 0, tongtt = 0;
+            int soluong, dongia;
+            int n = dt.Rows.Count;
+            for (int i=0;i < n;i++)
+            {
+                soluong = Convert.ToInt32(dt.Rows[i]["SOLUONG"].ToString());
+                dongia = Convert.ToInt32(dt.Rows[i]["DONGIABAN"].ToString());
+                tongsl += soluong;
+                tongtt += (soluong * dongia);
+            }
+            lb_tongsl.Text = tongsl.ToString();
+            lb_tongtt.Text = tongtt.ToString();
+        }
+    }
+}
