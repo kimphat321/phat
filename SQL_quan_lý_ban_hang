@@ -404,8 +404,68 @@ private void FR_CHUCVU_Load(object sender, EventArgs e)
             TXT_MaCV.Focus();
         }
     }
+    -------------------------------Thống kê có tính ---------------------------------------------
+    namespace QLBH_KIM_PHAT
+{
+    public partial class FR_CV_NHANVIEN : Form
+    {
+        public FR_CV_NHANVIEN()
+        {
+            InitializeComponent();
+        }
+        ketnoi kn = new ketnoi();
+        SqlConnection connet;
+        public void loadcombobox()
+        {
+            connet = kn.kn;
+            connet.Open();
+            SqlCommand cm = new SqlCommand("select MACV from ChucVu", connet);
+            SqlDataAdapter da = new SqlDataAdapter(cm);
+            DataSet ds = new DataSet();
+            da.Fill(ds, "ChucVu");
+            CB_MaCV.DataSource = ds.Tables[0];
+            CB_MaCV.DisplayMember = "MACV";
+            CB_MaCV.ValueMember = "MACV";
+        }
+        private void FR_CV_NHANVIEN_Load(object sender, EventArgs e)
+        {
+            loadcombobox();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string macv;
+            if (string.IsNullOrEmpty(CB_MaCV.Text))
+            {
+                macv = null;
+            }
+            else
+                macv = CB_MaCV.Text;
+            string s = "select cv.MACV, HOTENNV,GIOITINH,MUOCLUONG,SLNGAYCONG,PHUCAP,MUOCLUONG*SLNGAYCONG+PHUCAP as Tien_luong from CHUCVU cv,CHAMCONG cc,NHANVIEN nv where nv.MANV=cc.MANV and cv.MACV = nv.MACV and cv.macv='" + macv + "'";
+            DTG_CV_NHANVIEN.DataSource = kn.taobang(s);
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            int tongl = 0;
+            int mucluong, ngaycong, phucap;
+            int n = dt.Rows.Count;
+            for (int i = 0; i < n; i++)
+            {
+                mucluong = Convert.ToInt32(dt.Rows[i]["MUOCLUONG"].ToString());
+                phucap = Convert.ToInt32(dt.Rows[i]["PHUCAP"].ToString());
+                ngaycong = Convert.ToInt32(dt.Rows[i]["SLNGAYCONG"].ToString());
+                tongl += (mucluong * ngaycong + phucap);
+            }
+            lb_Luong.Text = tongl.ToString();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+    }
+}
     
-    -------------------------------Thống kê-----------------------------------------
+    -------------------------------Thống kê có ngày-----------------------------------------
     namespace QLBH_KIM_PHAT
 {
     public partial class FR_Thongke_Hoadon_ngaylaphd : Form
