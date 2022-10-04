@@ -1,0 +1,444 @@
+create database QLBH
+use QLBH
+create table tbl_LOAISANPHAM 
+(
+	MALOAI nvarchar(10) primary key,
+	TENLOAI nvarchar(50)
+)
+drop table tbl_SANPHAM
+create table tbl_SANPHAM
+(
+	MASP nvarchar(15) primary key,
+	TENSP nvarchar(50),
+	GIABAN bigint,
+	TINHTRANG bit,
+	MOTA nvarchar(MAX),
+	MALOAI nvarchar(10)
+	foreign key (MALOAI) references tbl_LOAISANPHAM (MALOAI)
+	on delete no action
+	on update cascade
+)
+drop table tbl_BANGGIA
+create table tbl_BANGGIA
+(
+	ID int primary key,
+	MASP nvarchar(50),
+	GIABAN bigint ,
+	NGAYAPDUNG datetime,
+	TINHTRANG bit
+)
+
+alter table tbl_SANPHAM
+add
+check(MASP like'SP%')
+
+
+alter table tbl_SANPHAM
+add 
+check(mota in (N'Cũ',N'Mới')) 
+-----------------
+
+insert into tbl_LOAISANPHAM values('01',N'Đồ dùng hằng ngày')
+insert into tbl_LOAISANPHAM values('02',N'Dụng cụ bếp')
+insert into tbl_LOAISANPHAM values('03',N'Đồ dùng học tập')
+insert into tbl_LOAISANPHAM values('04',N'Đồ dùng thể thao')
+insert into tbl_LOAISANPHAM values('05',N'Đồ dùng điện tử')	
+---------------
+insert into tbl_SANPHAM values('SP01',N'Viết chì',4000,'true',N'Mới','03')
+insert into tbl_SANPHAM values('SP02',N'Gôm',6000,'true',N'Cũ','03')
+insert into tbl_SANPHAM values('SP03',N'combo quần áo thể dục',70000,'true',N'Mới','04')
+insert into tbl_SANPHAM values('SP04',N'Bàn chải đánh răng',30000,'true',N'Mới','01')
+insert into tbl_SANPHAM values('SP05',N'Dao thái hoa quả',30000,'true',N'Cũ','02')
+------------------------
+insert into tbl_BANGGIA values('01','SP01',5000,'2005/08/08','true')
+insert into tbl_BANGGIA values('02','SP02',8000,'2005/09/08','true')
+insert into tbl_BANGGIA values('03','SP03',80000,'2005/08/25','true')
+insert into tbl_BANGGIA values('04','SP04',45000,'2005/10/08','true')
+insert into tbl_BANGGIA values('05','SP05',40000,'2006/09/08','true')
+
+------------------
+select a.*,b.*
+from tbl_SANPHAM a,tbl_LOAISANPHAM b
+where a.MALOAI=b.MALOAI
+
+-----------------
+select tbl_LOAISANPHAM.*
+from tbl_LOAISANPHAM
+where MALOAI not in (select MALOAI 
+					from tbl_SANPHAM )
+-------------------
+select top 1 with ties a.MALOAI , a.TENLOAI,COUNT(b.MALOAI) as N'Tổng số sản phẩm'
+from tbl_LOAISANPHAM a, tbl_SANPHAM b
+where a.MALOAI=b.MALOAI
+group by a.MALOAI , a.TENLOAI
+order by COUNT(b.MALOAI) desc
+--------------------
+select top 1 with ties *
+from tbl_SANPHAM
+order by GIABAN desc
+
+------------------------------------------VISUAL -------------------------------
+namespace Bai_on_thi_03
+{
+    class ket_noi
+    {
+        public SqlConnection kn = new SqlConnection("Data Source=msi;Initial Catalog=QLBH;Integrated Security=True");
+        public void mokn()
+        {
+            kn.Open();
+        }
+        public void dongkn()
+        {
+            kn.Close();
+        }
+        public DataTable taobang(string sql)
+        {
+            DataTable dta = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(sql, kn);
+            da.Fill(dta);
+            return dta;
+        }
+        public void themsanpham(string MSP1, string TenSP1, string GB1, bool Tinhtrang1, string mota1,string MaL1)
+        {
+            string s = "insert into tbl_SANPHAM values('" + MSP1 + "',N'"+TenSP1+"','"+GB1+"','"+Tinhtrang1+"',N'"+mota1+"','"+MaL1+"')";
+            SqlCommand scm = new SqlCommand(s,kn);
+            scm.ExecuteNonQuery();
+        }
+        public void suasanpham(string MSP1, string TenSP1, string GB1, bool Tinhtrang1, string mota1, string MaL1)
+        {
+            string s = "update tbl_SANPHAM set TENSP=N'" + TenSP1 + "',GIABAN='" + GB1 + "',TINHTRANG='" + Tinhtrang1 + "',MOTA=N'" + mota1 + "',MALOAI='" + MaL1 + "' where MASP='"+MSP1+"'";
+            SqlCommand scm = new SqlCommand(s, kn);
+            scm.ExecuteNonQuery();
+        }
+        public void xoasanpham(string MSP1, string TenSP1, string GB1, bool Tinhtrang1, string mota1, string MaL1)
+        {
+            string s = "delete from tbl_SANPHAM where MASP='"+MSP1+"'";
+            SqlCommand scm = new SqlCommand(s, kn);
+            scm.ExecuteNonQuery();
+        }
+        /// ///////////////////////////////////
+    
+        public void thembanggia(string ID, string MSP, string GB, string NgayAD, bool Tinhtrang)
+        {
+            string s = "insert into tbl_BANGGIA values('" + ID + "','" + MSP + "','" + GB + "','" + NgayAD + "',N'" + Tinhtrang + "')";
+            SqlCommand scm = new SqlCommand(s, kn);
+            scm.ExecuteNonQuery();
+        }
+        public void suabanggia(string ID, string MSP, string GB, string NgayAD, bool Tinhtrang)
+        {
+            string s = "update tbl_BANGGIA set MASP='" + MSP + "',GIABAN='" + GB + "',NGAYAPDUNG='" + NgayAD + "',TINHTRANG='" + Tinhtrang + "' where ID='" + ID + "'";
+            SqlCommand scm = new SqlCommand(s, kn);
+            scm.ExecuteNonQuery();
+        }
+        public void xoabanggia(string ID, string MSP, string GB, string NgayAD, bool Tinhtrang)
+        {
+            string s = "delete from tbl_BANGGIA where ID='"+ID+"'";
+            SqlCommand scm = new SqlCommand(s, kn);
+            scm.ExecuteNonQuery();
+        }
+    }
+}
+-------------------------------BẢNG CẬP NHẬT-----------------------
+namespace Bai_on_thi_03
+{
+    public partial class FR_CAPNHAT_BANGGIA : Form
+    {
+        public FR_CAPNHAT_BANGGIA()
+        {
+            InitializeComponent();
+        }
+        ket_noi kn = new ket_noi();
+        SqlConnection connet;
+        public void loaddulieu()
+        {
+            string s = "Select * from tbl_BANGGIA";
+            DGV_BG.DataSource = kn.taobang(s);
+        }
+        public void loadcombobox()
+        {
+            connet = kn.kn;
+            connet.Open();
+            SqlCommand cm = new SqlCommand("select MASP from tbl_SANPHAM", connet);
+            SqlDataAdapter da = new SqlDataAdapter(cm);
+            DataSet ds = new DataSet();
+            da.Fill(ds, "tbl_SANPHAM");
+            CB_MSP.DataSource = ds.Tables[0];
+            CB_MSP.DisplayMember = "MASP";
+            CB_MSP.ValueMember = "MASP";
+        }
+        private void DGV_BG_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataTable dt = new DataTable();
+            dt = (DataTable)DGV_BG.DataSource;
+            int tam = -1;
+            tam = DGV_BG.SelectedCells[0].RowIndex;
+            DataRow dong = dt.Rows[tam];
+            TXT_ID.Text = dong["ID"].ToString();
+            CB_MSP.Text = dong["MASP"].ToString();
+            TXT_GIA.Text = dong["GIABAN"].ToString();
+            DT_NAD.Text = dong["NGAYAPDUNG"].ToString();
+            CK_TT.Text = dong["TINHTRANG"].ToString();
+        }
+
+        private void B_them_Click(object sender, EventArgs e)
+        {
+            string s = "select * from tbl_BANGGIA where ID='" + TXT_ID.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count == 0)
+            {
+                kn.thembanggia(TXT_ID.Text, CB_MSP.Text, TXT_GIA.Text, DT_NAD.Value.ToString("yyyy/MM/dd"), CK_TT.Checked);
+                baoloi.Text = "Thêm Bảng bảng giá thành công";
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Thêm Bảng bảng giá không thành công";
+                TXT_ID.ResetText();
+                CB_MSP.ResetText();
+                TXT_GIA.ResetText();
+                CK_TT.ResetText();
+                TXT_ID.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void B_sua_Click(object sender, EventArgs e)
+        {
+            string s = "select * from tbl_BANGGIA where ID='" + TXT_ID.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count != 0)
+            {
+                kn.suabanggia(TXT_ID.Text, CB_MSP.Text, TXT_GIA.Text, DT_NAD.Value.ToString("yyyy/MM/dd"), CK_TT.Checked);
+                baoloi.Text = "Sửa Bảng bảng giá thành công";
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Sửa Bảng bảng giá không thành công";
+                TXT_ID.ResetText();
+                CB_MSP.ResetText();
+                TXT_GIA.ResetText();
+                CK_TT.ResetText();
+                TXT_ID.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void B_xoa_Click(object sender, EventArgs e)
+        {
+            string s = "select * from tbl_BANGGIA where ID='" + TXT_ID.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count != 0)
+            {
+                kn.xoabanggia(TXT_ID.Text, CB_MSP.Text, TXT_GIA.Text, DT_NAD.Value.ToString("yyyy/MM/dd"), CK_TT.Checked);
+                baoloi.Text = "Xóa Bảng bảng giá thành công";
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Xóa Bảng bảng giá không thành công";
+                TXT_ID.ResetText();
+                CB_MSP.ResetText();
+                TXT_GIA.ResetText();
+                CK_TT.ResetText();
+                TXT_ID.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void FR_CAPNHAT_BANGGIA_Load(object sender, EventArgs e)
+        {
+            loaddulieu();
+            loadcombobox();
+        }
+
+        private void B_thoat_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+    }
+}
+--------------------------------------------BẢNG CẬP NHẬT SẢN PHẨM------------------------------------------
+namespace Bai_on_thi_03
+{
+    public partial class FR_CAPNHAT_SANPHAM : Form
+    {
+        public FR_CAPNHAT_SANPHAM()
+        {
+            InitializeComponent();
+        }
+        ket_noi kn = new ket_noi();
+        SqlConnection connet;
+        public void loaddulieu()
+        {
+            string s = "Select * from tbl_SANPHAM";
+            DGV_SP.DataSource = kn.taobang(s);
+        }
+        public void loadcombobox()
+        {
+            connet = kn.kn;
+            connet.Open();
+            SqlCommand cm = new SqlCommand("select MALOAI from tbl_LOAISANPHAM", connet);
+            SqlDataAdapter da = new SqlDataAdapter(cm);
+            DataSet ds = new DataSet();
+            da.Fill(ds, "tbl_LOAISANPHAM");
+            CB_ML.DataSource = ds.Tables[0];
+            CB_ML.DisplayMember = "MALOAI";
+            CB_ML.ValueMember = "MALOAI";
+        }
+        private void FR_CAPNHAT_SANPHAM_Load(object sender, EventArgs e)
+        {
+            loaddulieu();
+            loadcombobox();
+        }
+
+        private void DGV_SP_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataTable dt = new DataTable();
+            dt = (DataTable)DGV_SP.DataSource;
+            int tam = -1;
+            tam = DGV_SP.SelectedCells[0].RowIndex;
+            DataRow dong = dt.Rows[tam];
+            TXT_MSP.Text = dong["MASP"].ToString();
+            TXT_TSP.Text = dong["TENSP"].ToString();
+            TXT_GIA.Text = dong["GIABAN"].ToString();
+            CK_TT.Text = dong["TINHTRANG"].ToString();
+            TXT_Mota.Text = dong["MOTA"].ToString();
+            CB_ML.Text = dong["MALOAI"].ToString();
+        }
+
+        private void B_them_Click(object sender, EventArgs e)
+        {
+            string s = "select * from tbl_SANPHAM where MASP='" + TXT_MSP.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count == 0)
+            {
+                kn.themsanpham(TXT_MSP.Text, TXT_TSP.Text, TXT_GIA.Text,CK_TT.Checked,TXT_Mota.Text, CB_ML.Text);
+                baoloi.Text = "Thêm Bảng Sản Phẩm thành công";
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Thêm Bảng Sản Phẩm không thành công";
+                TXT_MSP.ResetText();
+                TXT_TSP.ResetText();
+                TXT_GIA.ResetText();
+                CK_TT.ResetText();
+                TXT_Mota.ResetText();
+                CB_ML.ResetText();
+                TXT_MSP.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void B_sua_Click(object sender, EventArgs e)
+        {
+            string s = "select * from tbl_SANPHAM where MASP='" + TXT_MSP.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count != 0)
+            {
+                kn.suasanpham(TXT_MSP.Text, TXT_TSP.Text, TXT_GIA.Text, CK_TT.Checked, TXT_Mota.Text, CB_ML.Text);
+                baoloi.Text = "Sửa Bảng Nhân viên thành công";
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Sửa Bảng Nhân viên không thành công";
+                TXT_MSP.ResetText();
+                TXT_TSP.ResetText();
+                TXT_GIA.ResetText();
+                CK_TT.ResetText();
+                TXT_Mota.ResetText();
+                CB_ML.ResetText();
+                TXT_MSP.Focus();
+            }
+            loaddulieu();
+        }
+
+        private void B_xoa_Click(object sender, EventArgs e)
+        {
+            string s = "select * from tbl_SANPHAM where MASP='" + TXT_MSP.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count != 0)
+            {
+                kn.xoasanpham(TXT_MSP.Text, TXT_TSP.Text, TXT_GIA.Text, CK_TT.Checked, TXT_Mota.Text, CB_ML.Text);
+                baoloi.Text = "Xóa Bảng Nhân viên thành công";
+                B_sua.Enabled = true;
+                B_xoa.Enabled = true;
+            }
+            else
+            {
+                baoloi.Text = "Xóa Bảng Nhân viên không thành công";
+                TXT_MSP.ResetText();
+                TXT_TSP.ResetText();
+                TXT_GIA.ResetText();
+                CK_TT.ResetText();
+                TXT_Mota.ResetText();
+                CB_ML.ResetText();
+                TXT_MSP.Focus();
+            }
+            loaddulieu();
+        }
+ }
+-----------------------------BẢNG THÔNG KÊ-----------------------------
+namespace Bai_on_thi_03
+{
+    public partial class FR_TK_SP : Form
+    {
+        public FR_TK_SP()
+        {
+            InitializeComponent();
+        }
+        ket_noi kn = new ket_noi();
+        SqlConnection connet;
+        public void loadcombobox()
+        {
+            connet = kn.kn;
+            connet.Open();
+            SqlCommand cm = new SqlCommand("select MaSP from tbl_SANPHAM", connet);
+            SqlDataAdapter da = new SqlDataAdapter(cm);
+            DataSet ds = new DataSet();
+            da.Fill(ds, "tbl_SANPHAM");
+            CB_MSP.DataSource = ds.Tables[0];
+            CB_MSP.DisplayMember = "MaSP";
+            CB_MSP.ValueMember = "MaSP";
+        }
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FR_TK_SP_Load(object sender, EventArgs e)
+        {
+            loadcombobox();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string MSP;
+            if (string.IsNullOrEmpty(CB_MSP.Text))
+            {
+                MSP = null;
+            }
+            else
+            {
+                MSP = CB_MSP.Text;
+                string s = "select a.MASP,TENSP,a.GIABAN as N'Giá nhập',b.GIABAN,a.TINHTRANG from tbl_SANPHAM a,tbl_BANGGIA b where a.MASP=b.MASP and a.MASP='" + MSP + "'";
+                DGV_SP.DataSource = kn.taobang(s);
+                DataTable dt = new DataTable();
+                dt = kn.taobang(s);
+            }
+        }
+    }
+}
