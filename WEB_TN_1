@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thi tốt nghiệp-CNT20C062</title>
+    <link rel="stylesheet" type="text/css" href="../CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="../CSS/index.css">
+    <script src="../JS/jquery-3.6.0.min.js"></script>
+    <script src="../JS/index.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <form action="" class="mainform border border-primary rounded">
+            <div class="row">
+                <div class="col text-center">
+                    <img src="../IMG/Blank-Employee.jpg" alt="" style="border-radius: 50%;width: 100px;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <input type="text" id="txtusername" placeholder="Email" class="form-control">
+                    <input type="password" id="txtpassword" placeholder="Mật Khẩu" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center">
+                    <input type="button" value="Đăng nhập" class="btn btn-primary" id="btnsubmit">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a href="#"> Bạn cần giúp gì?</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
+----------------
+CSS
+
+.mainform{
+    width: 60%;
+    background-color: aliceblue;
+    margin: auto;
+    margin-top: 20%;
+}
+img{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+input[type="text"],input[type="password"]{
+    margin: 10px;
+    width: 96%;
+}
+input[type="text"]:hover,input[type="password"]:hover{
+    border-radius: 10px;
+    border: 1px solid red;
+    background-color: yellow;
+}
+#btnsubmit{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+a{
+    margin-left: 20px;
+    padding-bottom: 10px;
+}
+--------------
+JS
+
+$(document).ready(function(){
+    $("#btnsubmit").click(function(){
+        var user =$("#txtusername").val();
+        var password=$("#txtpassword").val();
+        if(user.trim().length>0 && password.trim().length>0)
+        {
+            location.href="http://tgc.edu.vn";
+        }
+        else
+        {
+            alert("Username và password không được bỏ trống");
+        }
+    })
+})
+--------------------------
+
+DE_3
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thi tốt nghiệp-CNT20C062</title>
+    <link rel="stylesheet" type="text/css" href="../CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="../CSS/index.css">
+    <script src="../JS/jquery-3.6.0.min.js"></script>
+    <script src="../JS/index.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <form action="" class="mainform border border-primary rounded">
+            <div class="row">
+                <div class="col text-center">
+                    <img src="../IMG/logotgc.png" alt="" style="border-radius: 50%;width: 100px;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <input type="text" id="txtduonglich" placeholder="Nhập năm dương lịch" class="form-control">
+                </div>
+                <div class="col">
+                    <input type="text" id="txtamlich" placeholder="Năm âm lịch" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center">
+                    <input type="button" value="Tìm" class="btn btn-primary" id="btnsubmit">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a href="#"> Bạn cần giúp gì?</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
+---------------------
+CSS
+.mainform{
+    width: 60%;
+    height: 360px;
+    background-color: aliceblue;
+    background-image:url("../IMG/cat.png") ;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 100px;
+    background-size: 100px;*/
+    margin: auto;
+    margin-top: 20%;
+}
+img{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+input[type="text"],input[type="password"]{
+    margin: 10px;
+    width: 95%;
+}
+input[type="text"]:hover,input[type="password"]:hover{
+    border-radius: 10px;
+    border: 1px solid blue;
+    background-color: orange;
+}
+#btnsubmit{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+a{
+    margin-left: 20px;
+    padding-bottom: 10px;
+}
+----------
+JS
+$(document).ready(function () {
+    $("#btnsubmit").click(function () {
+        var nam = $("#txtduonglich").val();
+        var can = ["Canh", "Tân", "Nhâm", "Quý", "Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ"]
+        var chi = ["Thân", "Dậu", "Tuất", "Hợi", "Tý", "Sửu", "Dần", "Mẹo", "Thìn", "Tỵ", "Ngọ", "Mùi"]
+        if(nam.trim().length>0 && nam+0>0)
+        {
+        var amlich = can[nam % 10] + " " + chi[nam % 12];
+        $("#txtamlich").val(amlich)
+        }
+        else
+        {
+            alert("không được bỏ trống năm dương lịch và năm dương lịch phải là số nguyên dương");
+        }
+    })
+})
