@@ -1,0 +1,113 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+namespace Test_2
+{
+    public partial class FR_CAPNHAT_DUAN : Form
+    {
+        public FR_CAPNHAT_DUAN()
+        {
+            InitializeComponent();
+        }
+        ketnoi kn = new ketnoi();
+        SqlConnection connet;
+        public void loaddulieu()
+        {
+            string s = "select * from Duan";
+            DGV_DUAN.DataSource = kn.taobang(s);
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void FR_CAPNHAT_DUAN_Load(object sender, EventArgs e)
+        {
+            kn.mokn();
+            loaddulieu();
+        }
+
+        private void DGV_DUAN_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataTable dt = new DataTable();
+            dt = (DataTable)DGV_DUAN.DataSource;
+            int tam = -1;
+            tam = DGV_DUAN.SelectedCells[0].RowIndex;
+            DataRow dong = dt.Rows[tam];
+            TXT_Maduan.Text = dong["Maduan"].ToString();
+            TXT_Tenduan.Text = dong["Tenduan"].ToString();
+            TXT_dd.Text = dong["Diadiem"].ToString();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string s = "select * from DUAN where Maduan='"+TXT_Maduan.Text+"'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count == 0)
+            {
+                kn.themduan(TXT_Maduan.Text, TXT_Tenduan.Text, TXT_dd.Text);
+                Bao_loi.Text = "Thêm bảng dự án thành công";
+            }
+            else
+            {
+                Bao_loi.Text = "Thêm bảng không thành công";
+                TXT_Maduan.ResetText();
+                TXT_Tenduan.ResetText();
+                TXT_dd.ResetText();
+                TXT_Maduan.Focus();
+            }
+            loaddulieu();
+            
+        }
+
+        private void Bxoa_Click(object sender, EventArgs e)
+        {
+            string s = "select * from Duan where Maduan='" + TXT_Maduan.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count != 0)
+            {
+                kn.xoaduan(TXT_Maduan.Text, TXT_Tenduan.Text, TXT_dd.Text);
+                Bao_loi.Text = "Xóa bảng dự án thành công";
+            }
+            else
+            {
+                Bao_loi.Text = "Xóa bảng dự án không thành công";
+                TXT_Maduan.ResetText();
+                TXT_Tenduan.ResetText();
+                TXT_dd.ResetText();
+                TXT_Maduan.Focus(); ;
+            }
+            loaddulieu();
+        }
+
+        private void Bsua_Click(object sender, EventArgs e)
+        {
+            string s = "select * from Duan where Maduan='" + TXT_Maduan.Text + "'";
+            DataTable dt = new DataTable();
+            dt = kn.taobang(s);
+            if (dt.Rows.Count != 0)
+            {
+                kn.suaduan(TXT_Maduan.Text, TXT_Tenduan.Text, TXT_dd.Text);
+                Bao_loi.Text = "Sửa bảng dự án thành công";
+            }
+            else
+            {
+                Bao_loi.Text = "Sửa bảng dự án không thành công";
+                TXT_Maduan.ResetText();
+                TXT_Tenduan.ResetText();
+                TXT_dd.ResetText();
+                TXT_Maduan.Focus(); ;
+            }
+            loaddulieu();
+        }
+    }
+}
